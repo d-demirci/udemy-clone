@@ -13,11 +13,11 @@ services:
       MYSQL_HOSTNAME: mysql
       MYSQL_PORT: 3306
       MYSQL_SSL_MODE: disabled
-      OPENID_AUTHORIZATION_ENDPOINT: http://login.p1ngp0ng.local:8082/auth/realms/p1ngp0ng/protocol/openid-connect/auth
-      OPENID_JWKS_ENDPOINT: http://login.p1ngp0ng.local:8082/auth/realms/p1ngp0ng/protocol/openid-connect/certs
-      OPENID_ISSUER: http://login.p1ngp0ng.local:8082/auth/realms/p1ngp0ng
+      OPENID_AUTHORIZATION_ENDPOINT: http://login.nubidus.com/auth/realms/p1ngp0ng/protocol/openid-connect/auth
+      OPENID_JWKS_ENDPOINT: http://login.nubidus.com/auth/realms/p1ngp0ng/protocol/openid-connect/certs
+      OPENID_ISSUER: http://login.nubidus.com/auth/realms/p1ngp0ng
       OPENID_CLIENT_ID: Guacamole
-      OPENID_REDIRECT_URI: http://guacamole.p1ngp0ng.local:8081/guacamole/
+      OPENID_REDIRECT_URI: http://guacamole.nubidus.com/guacamole/
       GUAC_LOG_LEVEL: debug
 
     ports:
