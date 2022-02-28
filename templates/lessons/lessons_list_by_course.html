@@ -1,0 +1,104 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+
+<section class="user-dashboard-area">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="user-dashboard-box">
+                    <div class="user-dashboard-sidebar">
+                        <div class="user-box">
+                            <img src="/media/{{ course.thumbnail }}" alt="" class="img-fluid">
+                            <div class="name">
+                                <div class="name">
+                                    {{ course.title }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="user-dashboard-menu">
+                            <ul>
+                                <li >
+                                    <a href="{% url 'courses:course-edit' course.slug %}">Temel Bilgiler</a>
+                                </li>
+                                <li >
+                                    <a href="{% url 'accounts:my-profile' %}">Modüller</a>
+                                </li>
+                                <li >
+                                    <a href="{% url 'accounts:my-profile' %}">Bölümler</a>
+                                </li>
+                                <li class="active"  >
+                                    <a href="{% url 'courses:course-lessons' course.slug %}">Dersler</a>
+                                </li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="user-dashboard-content">
+                        <div class="content-title-box">
+                            <div class="title">Ders Bilgileri</div>
+                            <div class="subtitle">Kurs Detayı için ders içeriğini oluşturun.
+                            </div>
+                        </div>
+                        {% if form.errors %}
+                        {% for field in form %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        <hr>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="accordion" id="accordionExample">
+                                        <div class="card" style="margin:10px 0;">
+                    
+                                            <div id="" class="collapse show"
+                                                 aria-labelledby="" data-parent="#accordionExample">
+                                                <div class="card-body" style="padding:0;">
+                                                    <table style="width: 100%;">
+                    
+                                                        {% for lesson in lessons %}
+                    
+                                                            <tr style="width: 100%; padding: 5px 0px;">
+                                                                <td style="text-align: left;padding:10px; border-bottom:1px solid #ccc;">
+                                                                    <a href="{% url 'courses:course-lesson-edit' pk=lesson.id %}"
+                                                                       id="{{ lesson.id }}">
+                                                                        <i class="fa fa-play"
+                                                                           style="font-size: 12px;color: #909090;padding: 10px;"></i>
+                                                                        {{ lesson.title }}
+                                                                    </a>
+                                                                </td>
+                                                                <td style="text-align: right; padding:10px; border-bottom:1px solid #ccc;">
+                                                                    <span class="lesson_duration">
+                                                                        {{ lesson.duration | floatformat:2 }}
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+    

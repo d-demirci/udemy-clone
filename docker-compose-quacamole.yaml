@@ -1,0 +1,82 @@
+version: '3.7'
+
+services:
+  guacomole:
+    image: guacamole/guacamole:latest
+    hostname: guacomole
+    environment:
+      MYSQL_DATABASE: pingpong_db  
+      MYSQL_USER: pingpong_db_user    
+      MYSQL_PASSWORD: pingpong_db_password 
+      GUACD_HOSTNAME: guacd
+      GUACD_PORT: 4822
+      MYSQL_HOSTNAME: mysql
+      MYSQL_PORT: 3306
+      MYSQL_SSL_MODE: disabled
+      OPENID_AUTHORIZATION_ENDPOINT: http://login.p1ngp0ng.local:8082/auth/realms/p1ngp0ng/protocol/openid-connect/auth
+      OPENID_JWKS_ENDPOINT: http://login.p1ngp0ng.local:8082/auth/realms/p1ngp0ng/protocol/openid-connect/certs
+      OPENID_ISSUER: http://login.p1ngp0ng.local:8082/auth/realms/p1ngp0ng
+      OPENID_CLIENT_ID: Guacamole
+      OPENID_REDIRECT_URI: http://guacamole.p1ngp0ng.local:8081/guacamole/
+      GUAC_LOG_LEVEL: debug
+
+    ports:
+      - 8081:8080
+    depends_on:
+      - "guacd"
+      -  "db"
+  
+  guacd:
+    image: guacamole/guacd:latest
+    hostname: guacd
+    environment:
+      - GUACD_LOG_LEVEL=debug
+    ports:
+      - 4822:4822
+      
+  keycloak:
+    image: jboss/keycloak
+    environment:
+      DB_VENDOR: MYSQL
+      DB_ADDR: mysql
+      DB_DATABASE: pingpong_db
+      DB_USER: pingpong_db_user
+      DB_PASSWORD: pingpong_db_password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Pa55w0rd
+      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the MySQL JDBC driver documentation in order to use it.
+      #JDBC_PARAMS: "connectTimeout=30000"
+    ports:
+      - 8082:8080
+    depends_on:
+      - db
+      
+  db:
+    image: mysql:5.7
+    restart: always
+    hostname: mysql
+    environment:
+      MYSQL_DATABASE: 'pingpong_db'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'pingpong_db_user'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'pingpong_db_password'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'pingpong_db_root_password'
+      useSSL: 'false'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    command: --init-file /data/application/initdb.sql
+    volumes:
+      - ./initdb.sql:/data/application/initdb.sql
+      - pingpong_db:/var/lib/mysql
+
+# Names our volume
+volumes:
+  pingpong_db:
+  static_volume:
+  media_volume:
+  certificates:
+

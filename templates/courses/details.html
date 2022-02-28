@@ -1,0 +1,344 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load humanize %}
+{% load total_minutes %}
+
+{% block content %}
+
+    <section class="course-header-area">
+        <div class="container">
+            <div class="row align-items-end">
+                <div class="col-lg-8">
+                    <div class="course-header-wrap">
+                        <h1 class="title">{{ course.title }}</h1>
+                        <p class="subtitle">{{ course.short_description|truncatewords:20 }}</p>
+                        <div class="rating-row">
+                            {#                            {{ --<span class="course-badge best-seller">Best seller</span>--}}#}
+                            {% for i in i|rjust:5 %}
+                                {% if forloop.counter <= 5 %}
+                                    <i class="fas fa-star filled" style="color: #f5c85b;"></i>
+                                {% else %}
+                                    <i class="fas fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="d-inline-block average-rating">5</span>
+                            <span>(20 değerlendirme)</span>
+                            <span class="enrolled-num">
+                                100 öğrenci kayıtlı
+                            </span>
+                        </div>
+                        <div class="created-row">
+                            {#                            {{ --<span class="created-by">--}}#}
+                            {#                            {{ --Created by--}}#}
+                            {#                            {{ --<a href="">first_name last_name</a>--}}#}
+                            {#                            {{ --</span>--}}#}
+                            <span class="last-updated-date">Oluşturulma Tarihi {{ course.created_at|date }}</span>
+                            <span class="last-updated-date">Son Güncelleme {{ course.updated_at|date }}</span>
+                            <span class="comment">
+                                <i class="fas fa-comment"></i>Türkçe
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="course-content-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+
+                    <div class="what-you-get-box">
+                        <div class="what-you-get-title">Kazanımlarınız Neler?</div>
+                        <ul class="what-you-get__items">
+                            <li>{{ course.outcome }}</li>
+                        </ul>
+                    </div>
+                    <br>
+                    <div class="course-curriculum-box">
+                        <div class="course-curriculum-title clearfix">
+                            <div class="title float-left">Kurs Kapsamındaki Dersler</div>
+                            <div class="float-right">
+                                <span class="total-lectures">
+                                    {{ course.lessons.count }} Ders
+                                </span>
+                                <span class="total-time">
+                                    2 saat
+                                </span>
+                            </div>
+                        </div>
+                        <div class="course-curriculum-accordion">
+
+                            <div class="lecture-group-wrapper">
+                                <div class="lecture-group-title clearfix" data-toggle="collapse"
+                                     data-target="#collapse"
+                                     aria-expanded="false">
+                                    <div class="title float-left">
+                                        Dersler
+                                    </div>
+                                    <div class="float-right">
+                                        <span class="total-lectures">
+                                             {{ course.lessons.count }} ders
+                                        </span>
+                                        <span class="total-time">
+                                            {{ course.lessons|total_minutes | floatformat:2 }} dakika
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div id="collapse" class="lecture-list collapse">
+                                    <ul>
+                                        {% for lesson in course.lessons.all %}
+                                            <li class="lecture has-preview">
+                                                <span class="lecture-title">{{ lesson.title }}</span>
+                                                <span class="lecture-time float-right">{{ lesson.duration | floatformat:2 }}</span>
+                                                <!-- <span class="lecture-preview float-right" data-toggle="modal" data-target="#CoursePreviewModal">Preview</span> -->
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="requirements-box">
+                        <div class="requirements-title">Önşartlar</div>
+                        <div class="requirements-content">
+                            <ul class="requirements__list">
+                                <li>{{ course.requirements }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="description-box view-more-parent">
+                        <div class="view-more" onclick="viewMore(this,'hide')">
+                            + Daha Fazla
+                        </div>
+                        <div class="description-title">Tanımı</div>
+                        <div class="description-content-wrap">
+                            <div class="description-content">
+                                {{ course.description }}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="compare-box view-more-parent">
+                        <div class="view-more" onclick="viewMore(this)">+ Daha Fazla</div>
+                        <div class="compare-title">İlgili Kurslar</div>
+                        <div class="compare-courses-wrap">
+
+                        </div>
+                    </div>
+
+                    <div class="about-instructor-box">
+                        <div class="about-instructor-title">
+                            Eğitmen Hakkında
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="about-instructor-image">
+                                    <img src="/media/{{ course.user.profile.avatar }}" alt="" class="img-fluid">
+                                    <ul>
+                                        <!-- <li><i class="fas fa-star"></i><b>4.4</b> Average Rating</li> -->
+                                        <li>
+                                            <i class="fas fa-comment"></i><b>
+                                            100
+                                        </b> değerlendirme
+                                        </li>
+                                        <li><i class="fas fa-user"></i><b>
+                                            120
+                                        </b> öğrenci
+                                        </li>
+                                        <li>
+                                            <i class="fas fa-play-circle"></i>
+                                            <b>
+                                                11
+                                            </b> Kurs
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="about-instructor-details view-more-parent">
+                                    <div class="view-more" onclick="viewMore(this)">+ Daha Fazla </div>
+                                    <div class="instructor-name">
+                                        <a href=""></a>
+                                    </div>
+                                    <div class="instructor-title">
+                                        {{course.user.first_name}} {{course.user.last_name}}
+                                    </div>
+                                    <div class="instructor-bio">
+                                        {{course.user.profile.bio}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="student-feedback-box">
+                        <div class="student-feedback-title">
+                            Öğrenci Dönütleri
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-lg-offset-4">
+                                <div class="average-rating">
+                                    <div class="num">
+                                        {#                                        {{ $course->average }}#}
+                                        3
+                                    </div>
+                                    <div class="rating">
+                                        {% for i in i|rjust:5 %}
+                                            {% if forloop.counter <= 5 %}
+                                                <i class="fas fa-star filled" style="color: #f5c85b;"></i>
+                                            {% else %}
+                                                <i class="fas fa-star" style="color: #abb0bb;"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="title">Ortalama Değerlendirme</div>
+                                </div>
+                            </div>
+                            {#                            {{--<div class="col-lg-9">--}}#}
+                            {#                                {{--<div class="individual-rating">--}}#}
+                            {#                                    {{--<ul>--}}#}
+                            {#                                        {{--@for($i = 1; $i <= 5; $i++)--}}#}
+                            {#                                            {{--<li>--}}#}
+                            {#                                                {{--<div class="progress">--}}#}
+                            {#                                                    {{--<div class="progress-bar" style="width: 20%"></div>--}}#}
+                            {#                                                {{--</div>--}}#}
+                            {#                                                {{--<div>--}}#}
+                            {#                                                    {{--<span class="rating">--}}#}
+                            {#                                                        {{--@for($j = 1; $j <= (5 - $i); $j++)--}}#}
+                            {#                                                            {{--<i class="fas fa-star"></i>--}}#}
+                            {#                                                        {{--@endfor--}}#}
+                            {#                                                        {{--@for($j = 1; $j <= $i; $j++)--}}#}
+                            {#                                                            {{--<i class="fas fa-star filled"></i>--}}#}
+                            {#                                                        {{--@endfor--}}#}
+                            {#                                                    {{--</span>--}}#}
+                            {#                                                    {{--<span>30%</span>--}}#}
+                            {#                                                {{--</div>--}}#}
+                            {#                                            {{--</li>--}}#}
+                            {#                                        {{--@endfor--}}#}
+                            {#                                    {{--</ul>--}}#}
+                            {#                                {{--</div>--}}#}
+                            {#                            {{--</div>--}}#}
+                        </div>
+                        <div class="reviews">
+                            <div class="reviews-title">Görüşler</div>
+                            <ul>
+                                <li>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="reviewer-details clearfix">
+                                                <div class="reviewer-img float-left">
+                                                    <img src="" alt="">
+                                                </div>
+                                                <div class="review-time">
+                                                    <div class="time">
+                                                        Zaman
+                                                    </div>
+                                                    <div class="reviewer-name">
+                                                        İsim
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <div class="review-details">
+                                                <div class="rating">
+                                                    {% for i in i|rjust:5 %}
+                                                        {% if forloop.counter <= 5 %}
+                                                            <i class="fas fa-star filled" style="color: #f5c85b;"></i>
+                                                        {% else %}
+                                                            <i class="fas fa-star" style="color: #abb0bb;"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="review-text">
+                                                    Görüş
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="course-sidebar natural">
+                        <div class="preview-video-box">
+                            <a data-toggle="modal" data-target="#CoursePreviewModal">
+                                <img src="{% static 'images/learning.jpg' %}" alt="" class="img-fluid">
+                                <span class="preview-text">Kursu Önizler</span>
+                                <span class="play-btn"></span>
+                            </a>
+                        </div>
+                        <div class="course-sidebar-text-box">
+                            <div class="price">
+                                <span class="current-price">
+                                    ₺<span class="current-price">{{ course.price | floatformat:2 | intcomma }}</span></span>
+                                <input type="hidden" id="total_price_of_checking_out" value="{{ course.price | floatformat:2 }}">
+                            </div>
+
+                            {#                            {{ --<div class="buy-btns">--}}#}
+                            {#                            {{ --<button class="btn btn-buy-now" type="button">Already purchased</button>--}}#}
+                            {#                            {{ --</div>--}}#}
+                            <div class="buy-btns">
+                                {% if is_enrolled %}
+                                    <button class="btn btn-add-cart" type="button"
+                                            style="background-color: #00796b; border-color: #08796f; color: #ffffff">
+                                        Kursa Git
+                                    </button>
+                                {% else %}
+                                    {% if is_in_cart %}
+                                        {#                                    <a href="" class="btn btn-buy-now" id="course_2" onclick="handleBuyNow(this)">Buy#}
+                                        {#                                        now</a>#}
+                                        <button class="btn btn-add-cart" type="button"
+                                                style="background-color: #8980fe; border-color: #8980fe; color: #ffffff">
+                                            Sepete Eklendi
+                                        </button>
+                                    {% else %}
+                                        <form action="{% url 'cart:cart_add' course.slug %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" value="" name="course_id">
+                                            <input type="hidden" value="" name="name">
+                                            <input type="hidden" value="" name="price">
+                                            <input type="hidden" value="1" name="quantity">
+
+                                            <button class="btn btn-add-cart" type="submit" id="cart">Sepete Ekle
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+
+                            <div class="includes">
+                                <div class="title"><b>Dahil:</b></div>
+                                <ul>
+                                    <li>
+                                        <i class="far fa-file-video"></i>
+                                        isteğe bağlı videolar
+                                    </li>
+                                    <li>
+                                        <i class="far fa-file"></i> 30 ders
+                                    </li>
+                                    <li><i class="far fa-compass"></i>Sınırsız erişim
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-mobile-alt"></i>Mobilden erişim
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
