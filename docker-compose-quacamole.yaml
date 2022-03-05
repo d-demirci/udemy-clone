@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  guacomole:
+  guacamole:
     image: guacamole/guacamole:latest
     hostname: guacomole
     environment:
@@ -10,18 +10,21 @@ services:
       MYSQL_PASSWORD: pingpong_db_password 
       GUACD_HOSTNAME: guacd
       GUACD_PORT: 4822
+      GUACD_SSL: 'False'
       MYSQL_HOSTNAME: mysql
       MYSQL_PORT: 3306
       MYSQL_SSL_MODE: disabled
-      OPENID_AUTHORIZATION_ENDPOINT: http://login.nubidus.com/auth/realms/p1ngp0ng/protocol/openid-connect/auth
-      OPENID_JWKS_ENDPOINT: http://login.nubidus.com/auth/realms/p1ngp0ng/protocol/openid-connect/certs
-      OPENID_ISSUER: http://login.nubidus.com/auth/realms/p1ngp0ng
+      OPENID_AUTHORIZATION_ENDPOINT: http://login.nubidus.local/auth/realms/p1ngp0ng/protocol/openid-connect/auth
+      OPENID_TOKEN_ENDPOINT: http://login.nubidus.local/auth/realms/p1ngp0ng/protocol/openid-connect/token
+      OPENID_JWKS_ENDPOINT: http://login.nubidus.local/auth/realms/p1ngp0ng/protocol/openid-connect/certs
+      OPENID_ISSUER: http://login.nubidus.local/auth/realms/p1ngp0ng
       OPENID_CLIENT_ID: Guacamole
-      OPENID_REDIRECT_URI: http://guacamole.nubidus.com/guacamole/
-      GUAC_LOG_LEVEL: debug
+      OPENID_REDIRECT_URI: http://guacamole.nubidus.local/guacamole/
+      GUACAMOLE_LOG_LEVEL: debug
+      # GUACAMOLE_HOME: '/home/guacamole/.guacamole'
 
     ports:
-      - 8083:8080
+      - 8080
     depends_on:
       - "guacd"
       -  "db"
@@ -36,6 +39,7 @@ services:
       
   keycloak:
     image: jboss/keycloak
+    hostname: keycloak
     environment:
       DB_VENDOR: MYSQL
       DB_ADDR: mysql
@@ -47,7 +51,7 @@ services:
       # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the MySQL JDBC driver documentation in order to use it.
       #JDBC_PARAMS: "connectTimeout=30000"
     ports:
-      - 8082:8080
+      - 8080
     depends_on:
       - db
       
@@ -72,6 +76,18 @@ services:
     volumes:
       - ./initdb.sql:/data/application/initdb.sql
       - pingpong_db:/var/lib/mysql
+
+  proxy:
+    build: ./docker/nginx
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - 80:80
+    depends_on:
+      - keycloak
+      - guacamole
+      - guacd
 
 # Names our volume
 volumes:
